@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('episode_number');
             $table->string('title');
             $table->text('description')->nullable();
+            $table->string('image_url')->nullable();
             $table->string('trailer_url')->nullable();  // URL to episode trailer
             $table->string('episode_url')->nullable();  // URL to full episode
             $table->timestamps();

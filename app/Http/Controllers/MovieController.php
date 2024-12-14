@@ -185,7 +185,7 @@ class MovieController extends Controller
         foreach ($allCategories as $category) {
             $movies = Movie::whereHas('categories', function ($query) use ($category) {
                 $query->where('name', $category->name);
-            })->orderBy('view_count', 'desc')->limit(10)->get();
+            })->orderBy('view_count', 'desc')->limit(5)->get();
             $popularInCategory[] = [
                 'title' =>  "Popular in " . $category->name,
                 'data' => $movies
@@ -197,35 +197,36 @@ class MovieController extends Controller
             'message' => 'Dashboard data retrieved successfully',
             'data' => [
                 [
+                    'title' => 'Recommended Movies',
+                    'data' => $recommendedMovies,
+                    'type' => 'movies'
+                ],
+                [
+                    'title' => 'Recommended Series',
+                    'data' => $recommendedSeries,
+                    'type' => 'series'
+                ],
+                [
                     'title' => 'Newly Added Movies',
                     'type' => 'movies',
                     'data' => $newAddedMovies
                 ],
-                // [
-                //     'title' => 'Newly Added Series',
-                //     'data' => $newAddedSeries,
-                //     'type' => 'series'
-                // ],
+                [
+                    'title' => 'Newly Added Series',
+                    'data' => $newAddedSeries,
+                    'type' => 'series'
+                ],
                 [
                     'title' => 'Trending Movies',
                     'data' => $trendingMovies,
                     'type' => 'movies'
                 ],
-                // [
-                //     'title' => 'Trending Series',
-                //     'data' => $trendingSeries,
-                //     'type' => 'series'
-                // ],
                 [
-                    'title' => 'Recommended Movies',
-                    'data' => $recommendedMovies,
-                    'type' => 'movies'
+                    'title' => 'Trending Series',
+                    'data' => $trendingSeries,
+                    'type' => 'series'
                 ],
-                // [
-                //     'title' => 'Recommended Series',
-                //     'data' => $recommendedSeries,
-                //     'type' => 'series'
-                // ],
+
             ] + $popularInCategory
         ], 200);
     }
@@ -245,6 +246,18 @@ class MovieController extends Controller
                 'movies' => $movies,
                 'series' => $series
             ]
+        ], 200);
+    }
+
+
+    // Get series by id
+    public function getSeries($id)
+    {
+        $series = Series::with('seasons.episodes')->findOrFail($id);
+        return response()->json([
+            'success' => true,
+            'message' => 'Series retrieved successfully',
+            'series' => $series
         ], 200);
     }
 }

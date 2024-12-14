@@ -36,11 +36,10 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
 Route::get('/movies', [MovieController::class, 'index']);
 Route::get('/series', [MovieController::class, 'getAllSeries']);
-
 Route::get('/dashboard', [MovieController::class, 'dashboard']);
 Route::get('/search', [MovieController::class, 'search']);
-
-Route::get('channels', [ChannelsController::class, 'index']);
+Route::get('/channels', [ChannelsController::class, 'index']);
+Route::get('/series/{id}', [MovieController::class, 'getSeries']);
 
 
 
