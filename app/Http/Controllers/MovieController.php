@@ -73,7 +73,12 @@ class MovieController extends Controller
             'categories' => 'array',
             'tags' => 'array'
         ]);
-
+        if ($request->has('poster') && !str_starts_with($request->poster, 'http')) {
+            $posterData = base64_decode($request->poster);
+            $posterPath = 'posters/' . uniqid() . '.jpg';
+            file_put_contents(public_path($posterPath), $posterData);
+            $data['poster'] = url($posterPath);
+        }
         $movie = Movie::create($data);
 
         if ($request->has('categories')) {
@@ -81,7 +86,6 @@ class MovieController extends Controller
             foreach ($request->categories as $category) {
                 Category::firstOrCreate(['name' => $category]);
             }
-
             $categoryIds = Category::whereIn('name', $request->categories)->pluck('id');
             $movie->categories()->sync($categoryIds);
         }
