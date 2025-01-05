@@ -264,4 +264,14 @@ class MovieController extends Controller
             'series' => $series
         ], 200);
     }
+
+    public function deleteMovie($id)
+    {
+        $movie = Movie::findOrFail($id);
+        $movie->delete();
+        return response()->json([
+            'success' => true,
+            'message' => 'Movie deleted successfully'
+        ], 200);
+    }
 }

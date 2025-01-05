@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MovieController;
 use App\Http\Controllers\MyPlansController;
 use App\Http\Controllers\PlanController;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,6 +58,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     // Routes for adding movies, series, seasons and episodes
     Route::post('/admin/movies', [MovieController::class, 'storeMovie']);
+    Route::delete('/admin/movies/{id}', [MovieController::class, 'deleteMovie']);
     Route::post('/series', [MovieController::class, 'storeSeries']);
     Route::post('/series/{seriesId}/season', [MovieController::class, 'storeSeason']);
     Route::post('/season/{seasonId}/episode', [MovieController::class, 'storeEpisode']);
@@ -69,4 +71,17 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('/plans/{id}', [PlanController::class, 'updatePlan']);
     Route::delete('/plans/{id}', [PlanController::class, 'deletePlan']);
     Route::post('/subscribe', [PlanController::class, 'subscribe']);
+});
+
+
+// Artisan routes
+Route::get('/migrate', function () {
+    Artisan::call('migrate');
+    return 'Migrated';
+});
+
+// Optimize routes
+Route::get('/optimize', function () {
+    Artisan::call('optimize');
+    return 'Optimized';
 });
