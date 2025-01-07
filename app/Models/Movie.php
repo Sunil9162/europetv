@@ -18,7 +18,12 @@ class Movie extends Model
         'rating',
         'poster',
         'trailer_url',
-        'movie_url'
+        'movie_url',
+        'status',
+    ];
+
+    protected $casts = [
+        'status' => 'boolean',
     ];
 
     public function categories()

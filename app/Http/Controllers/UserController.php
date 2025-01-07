@@ -113,4 +113,101 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+
+    public function index()
+    {
+        try {
+            $users = User::all();
+            return response()->json([
+                "success" => true,
+                "message" => "Users fetched successfully",
+                "users" => $users
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "success" => false,
+                "message" =>  $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function show($id)
+    {
+        try {
+            $user = User::find($id);
+            if (!$user) {
+                return response()->json([
+                    "success" => false,
+                    "message" => "User not found"
+                ], 404);
+            }
+            return response()->json([
+                "success" => true,
+                "message" => "User fetched successfully",
+                "user" => $user
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "success" => false,
+                "message" =>  $th->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function destroy($id)
+    {
+        try {
+            $user = User::find($id);
+            if (!$user) {
+                return response()->json([
+                    "success" => false,
+                    "message" => "User not found"
+                ], 404);
+            }
+            $user->delete();
+            return response()->json([
+                "success" => true,
+                "message" => "User deleted successfully"
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "success" => false,
+                "message" =>  $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $user = User::find($id);
+            if (!$user) {
+                return response()->json([
+                    "success" => false,
+                    "message" => "User not found"
+                ], 404);
+            }
+            $validatedData = $request->validate([
+                'name' => 'required|max:55',
+                'email' => 'email|required|unique:users',
+                'password' => 'required|confirmed'
+            ]);
+
+            $validatedData['password'] = bcrypt($request->password);
+
+            $user->update($validatedData);
+            return response()->json([
+                "success" => true,
+                "message" => "User updated successfully",
+                "user" => $user
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "success" => false,
+                "message" =>  $th->getMessage()
+            ], 500);
+        }
+    }
 }

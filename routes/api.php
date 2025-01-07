@@ -59,6 +59,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     // Routes for adding movies, series, seasons and episodes
     Route::post('/admin/movies', [MovieController::class, 'storeMovie']);
     Route::delete('/admin/movies/{id}', [MovieController::class, 'deleteMovie']);
+    Route::post("/movies/{id}/update", [MovieController::class, 'updateMovie']);
     Route::post('/series', [MovieController::class, 'storeSeries']);
     Route::post('/series/{seriesId}/season', [MovieController::class, 'storeSeason']);
     Route::post('/season/{seasonId}/episode', [MovieController::class, 'storeEpisode']);
@@ -71,6 +72,18 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('/plans/{id}', [PlanController::class, 'updatePlan']);
     Route::delete('/plans/{id}', [PlanController::class, 'deletePlan']);
     Route::post('/subscribe', [PlanController::class, 'subscribe']);
+
+
+    // Admin routes for users
+    Route::get('/users', [UserController::class, 'index']);
+    Route::get('/users/{id}', [UserController::class, 'show']);
+    Route::delete('/users/{id}', [UserController::class, 'destroy']);
+    Route::put('/users/{id}', [UserController::class, 'update']);
+
+
+    // Admin routes for my plans
+    Route::get('/myplans', [MyPlansController::class, 'allPlans']);
+    Route::get('/myplans/{id}', [MyPlansController::class, 'show']);
 });
 
 

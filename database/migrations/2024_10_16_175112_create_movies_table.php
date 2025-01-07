@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('trailer_url')->nullable();  // URL to movie trailer
             $table->string('movie_url')->nullable();    // URL to full movie
             $table->integer('view_count')->default(0);
+            $table->boolean('status')->default(true);  // 1 for active, 0 for inactive
             $table->timestamps();
         });
     }

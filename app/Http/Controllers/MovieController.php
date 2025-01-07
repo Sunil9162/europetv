@@ -274,4 +274,59 @@ class MovieController extends Controller
             'message' => 'Movie deleted successfully'
         ], 200);
     }
+
+    public function updateMovie(Request $request, $id)
+    {
+        try {
+            $data = $request->only([
+                'title',
+                'description',
+                'director',
+                'producer',
+                'release_year',
+                'rating',
+                'poster',
+                'trailer_url',
+                'movie_url',
+                'categories',
+                'tags',
+                'status'
+            ]);
+
+            $movie = Movie::findOrFail($id);
+            if ($request->has('poster') && !str_starts_with($request->poster, 'http')) {
+                $posterData = base64_decode($request->poster);
+                $posterPath = 'posters/' . uniqid() . '.jpg';
+                file_put_contents(public_path($posterPath), $posterData);
+                $data['poster'] = url($posterPath);
+            }
+            $movie->update($data);
+            if ($request->has('categories')) {
+                // Create categories if they don't exist
+                foreach ($request->categories as $category) {
+                    Category::firstOrCreate(['name' => $category]);
+                }
+                $categoryIds = Category::whereIn('name', $request->categories)->pluck('id');
+                $movie->categories()->sync($categoryIds);
+            }
+            if ($request->has('tags')) {
+                // Create tags if they don't exist
+                foreach ($request->tags as $tag) {
+                    Tag::firstOrCreate(['name' => $tag]);
+                }
+                $tagIds = Tag::whereIn('name', $request->tags)->pluck('id');
+                $movie->tags()->sync($tagIds);
+            }
+            return response()->json([
+                'success' => true,
+                'message' => 'Movie updated successfully',
+                'movie' => $movie
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
 }
