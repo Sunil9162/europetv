@@ -75,15 +75,15 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
 
     // Admin routes for users
-    Route::get('/users', [UserController::class, 'index']);
-    Route::get('/users/{id}', [UserController::class, 'show']);
-    Route::delete('/users/{id}', [UserController::class, 'destroy']);
-    Route::put('/users/{id}', [UserController::class, 'update']);
+    Route::get('/admin/users', [UserController::class, 'index']);
+    Route::get('/admin/users/{id}', [UserController::class, 'show']);
+    Route::delete('/admin/users/{id}', [UserController::class, 'destroy']);
+    Route::put('/admin/users/{id}', [UserController::class, 'update']);
 
 
     // Admin routes for my plans
-    Route::get('/myplans', [MyPlansController::class, 'allPlans']);
-    Route::get('/myplans/{id}', [MyPlansController::class, 'show']);
+    Route::get('/admin/myplans', [MyPlansController::class, 'allPlans']);
+    Route::get('/admin/myplans/{id}', [MyPlansController::class, 'show']);
 });
 
 
