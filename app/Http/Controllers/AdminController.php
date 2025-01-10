@@ -140,13 +140,21 @@ class AdminController extends Controller
                 $revenueReport['data'][] = collect($plansofDay)->sum('price');
             }
             $userData = [];
-            // Active user inactive user    
+            // Active user inactive user percentage
+            $activeUsers = MyPlans::where('status', 1)->count();
+            $inactiveUsers = MyPlans::where('status', 0)->count();
+            $totalUsers = User::count();
+            $userData['active_users'] = $activeUsers;
+            $userData['inactive_users'] = $inactiveUsers;
+            $userData['active_users_percentage'] = ($activeUsers / $totalUsers) * 100;
+            $userData['inactive_users_percentage'] = ($inactiveUsers / $totalUsers) * 100;
 
             return response()->json([
                 "success" => true,
                 "message" => "Dashboard data fetched successfully",
                 "overview" => $overView,
-                "revenue_report" => $revenueReport
+                "revenue_report" => $revenueReport,
+                "user_data" => $userData
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
