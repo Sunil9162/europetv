@@ -136,7 +136,8 @@ class AdminController extends Controller
                         $plansofDay[] = $plan;
                     }
                 }
-                $revenueReport['data'][] = count($plansofDay);
+                // Add the price of the plans
+                $revenueReport['data'][] = collect($plansofDay)->sum('price');
             }
             $userData = [];
             // Active user inactive user    
