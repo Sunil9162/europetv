@@ -129,7 +129,7 @@ class AdminController extends Controller
             for ($i = 0; $i < 7; $i++) {
                 $date = now()->subDays($i)->format('l');
                 $revenueReport['labels'][] = $date;
-                $revenueReport['data'][] = $plans[$i]->price;
+                $revenueReport['data'][] = $plans->count() > $i ? $plans[$i]->price : 0;
             }
 
 
