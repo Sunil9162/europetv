@@ -67,7 +67,7 @@ class MyPlansController extends Controller
                 return response()->json([
                     "success" => false,
                     "message" => "My plan not found"
-                ], 404);
+                ], status: 400);
             }
             return response()->json([
                 "success" => true,
