@@ -125,12 +125,12 @@ class AdminController extends Controller
             // Graph data
             $revenueReport['labels'] = [];
             $revenueReport['data'] = [];
-            $plans = MyPlans::whereBetween('created_at', [now()->subDays(7), now()]);
-            for ($i = 0; $i < 7; $i++) {
-                $date = now()->subDays($i)->format('l');
+            $plans = MyPlans::whereBetween('created_at', [now()->subDays(7), now()])->get();
+            $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            foreach ($daysOfWeek as $day) {
+                $date = now()->startOfWeek()->modify($day)->format('l');
+                $planForDate = $plans->firstWhere('created_at', $date);
                 $revenueReport['labels'][] = $date;
-                $planForDate = $plans->firstWhere('created_at', '>=', now()->subDays($i)->startOfDay())
-                    ->firstWhere('created_at', '<', now()->subDays($i)->endOfDay());
                 $revenueReport['data'][] = $planForDate ? $planForDate->price : 0;
             }
 
