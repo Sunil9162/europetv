@@ -127,11 +127,14 @@ class AdminController extends Controller
             $revenueReport['data'] = [];
             $plans = MyPlans::whereBetween('created_at', [now()->subDays(7), now()])->get();
             $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-            foreach ($daysOfWeek as $day) {
-                $date = now()->startOfWeek()->modify($day)->format('l');
-                $planForDate = $plans->where('created_at', '>=', now()->startOfWeek()->modify($day))->where('created_at', '<=', now()->startOfWeek()->modify($day)->endOfDay())->first();
-                $revenueReport['labels'][] = $date;
-                $revenueReport['data'][] = $planForDate ? $planForDate->price : 0;
+            for ($i = 0; $i < 7; $i++) {
+                $day = $daysOfWeek[$i];
+                $revenueReport['labels'][] = $day;
+                foreach ($plans as $plan) {
+                    if ($plan->created_at->format('l') == $day) {
+                        $revenueReport['data'][$i] += isset($revenueReport['data'][$i]) ? $revenueReport['data'][$i]['price'] : 0;
+                    }
+                }
             }
 
 
