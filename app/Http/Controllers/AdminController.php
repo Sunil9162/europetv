@@ -137,6 +137,8 @@ class AdminController extends Controller
                         } else {
                             $revenueReport['data'][$i] = $plan->price;
                         }
+                    } else {
+                        $revenueReport['data'][$i] = 0;
                     }
                 }
             }
