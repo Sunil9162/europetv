@@ -130,6 +130,8 @@ class AdminController extends Controller
                 $revenueReport['labels'][] = $plan->created_at->format('EEE');
                 $revenueReport['data'][] = $plan->price;
             }
+
+
             return response()->json([
                 "success" => true,
                 "message" => "Dashboard data fetched successfully",
