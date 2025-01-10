@@ -130,19 +130,16 @@ class AdminController extends Controller
             for ($i = 0; $i < 7; $i++) {
                 $day = $daysOfWeek[$i];
                 $revenueReport['labels'][] = $day;
+                $plansofDay = [];
                 foreach ($plans as $plan) {
                     if ($plan->created_at->format('l') == $day) {
-                        if (isset($revenueReport['data'][$i])) {
-                            $revenueReport['data'][$i] += doubleval($plan->price);
-                        } else {
-                            $revenueReport['data'][$i] = doubleval($plan->price);
-                        }
-                    } else {
-                        $revenueReport['data'][$i] = 0;
+                        $plansofDay[] = $plan;
                     }
                 }
+                $revenueReport['data'][] = count($plansofDay);
             }
-
+            $userData = [];
+            // Active user inactive user    
 
             return response()->json([
                 "success" => true,
