@@ -31,7 +31,7 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 "success" => false,
-                "message" =>  $th->getMessage()
+                "message" => $th->getMessage()
             ], 500);
         }
     }
@@ -63,7 +63,7 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 "success" => false,
-                "message" =>  $th->getMessage()
+                "message" => $th->getMessage()
             ], 500);
         }
     }
@@ -79,7 +79,7 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 "success" => false,
-                "message" =>  $th->getMessage()
+                "message" => $th->getMessage()
             ], 500);
         }
     }
@@ -109,7 +109,7 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 "success" => false,
-                "message" =>  $th->getMessage()
+                "message" => $th->getMessage()
             ], 500);
         }
     }
@@ -118,16 +118,22 @@ class UserController extends Controller
     public function index()
     {
         try {
-            $users = User::all();
+            $users = User::paginate();
             return response()->json([
                 "success" => true,
                 "message" => "Users fetched successfully",
-                "users" => $users
+                "users" => $users->items(),
+                'meta' => [
+                    'total' => $users->total(),
+                    'currentPage' => $users->currentPage(),
+                    'perPage' => $users->perPage(),
+                    'lastPage' => $users->lastPage()
+                ]
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 "success" => false,
-                "message" =>  $th->getMessage()
+                "message" => $th->getMessage()
             ], 500);
         }
     }
@@ -150,7 +156,7 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 "success" => false,
-                "message" =>  $th->getMessage()
+                "message" => $th->getMessage()
             ], 500);
         }
     }
@@ -174,7 +180,7 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 "success" => false,
-                "message" =>  $th->getMessage()
+                "message" => $th->getMessage()
             ], 500);
         }
     }
@@ -206,7 +212,7 @@ class UserController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 "success" => false,
-                "message" =>  $th->getMessage()
+                "message" => $th->getMessage()
             ], 500);
         }
     }
