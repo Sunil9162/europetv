@@ -146,8 +146,8 @@ class AdminController extends Controller
             $totalUsers = User::count();
             $userData['active_users'] = $activeUsers;
             $userData['inactive_users'] = $inactiveUsers;
-            $userData['active_users_percentage'] = ($activeUsers / $totalUsers) * 100;
-            $userData['inactive_users_percentage'] = ($inactiveUsers / $totalUsers) * 100;
+            $userData['active_users_percentage'] = round(($activeUsers / $totalUsers) * 100, 0);
+            $userData['inactive_users_percentage'] = round(($inactiveUsers / $totalUsers) * 100, 0);
 
             return response()->json([
                 "success" => true,
