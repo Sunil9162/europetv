@@ -148,13 +148,15 @@ class AdminController extends Controller
             $userData['inactive_users'] = $inactiveUsers;
             $userData['active_users_percentage'] = round(($activeUsers / $totalUsers) * 100, 0);
             $userData['inactive_users_percentage'] = round(($inactiveUsers / $totalUsers) * 100, 0);
-
+            $newMembers = User::whereBetween('created_at', [now()->subDays(7), now()])->get();
+            $userData['new_members'] = count($newMembers);
             return response()->json([
                 "success" => true,
                 "message" => "Dashboard data fetched successfully",
                 "overview" => $overView,
                 "revenue_report" => $revenueReport,
-                "user_data" => $userData
+                "user_data" => $userData,
+                "new_members" => $newMembers
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
