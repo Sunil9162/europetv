@@ -125,9 +125,9 @@ class AdminController extends Controller
             // Graph data
             $revenueReport['labels'] = [];
             $revenueReport['data'] = [];
-            $plans = MyPlans::whereBetween('created_at', [now()->subDays(365), now()])->get();
+            $plans = MyPlans::whereBetween('created_at', [now()->subDays(7), now()])->get();
             foreach ($plans as $plan) {
-                $revenueReport['labels'][] = $plan->created_at->format('EEE');
+                $revenueReport['labels'][] = $plan->created_at->format('l');
                 $revenueReport['data'][] = $plan->price;
             }
 
