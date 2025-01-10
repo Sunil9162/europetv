@@ -84,6 +84,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     // Admin routes for my plans
     Route::get('/admin/myplans', [MyPlansController::class, 'allPlans']);
     Route::get('/admin/myplans/{id}', [MyPlansController::class, 'show']);
+
+    //Admin Dashboard
+    Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
 });
 
 
