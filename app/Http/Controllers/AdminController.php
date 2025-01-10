@@ -133,9 +133,9 @@ class AdminController extends Controller
                 foreach ($plans as $plan) {
                     if ($plan->created_at->format('l') == $day) {
                         if (isset($revenueReport['data'][$i])) {
-                            $revenueReport['data'][$i] += $plan->price;
+                            $revenueReport['data'][$i] += intval($plan->price);
                         } else {
-                            $revenueReport['data'][$i] = $plan->price;
+                            $revenueReport['data'][$i] = intval($plan->price);
                         }
                     } else {
                         $revenueReport['data'][$i] = 0;
