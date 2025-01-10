@@ -128,7 +128,7 @@ class AdminController extends Controller
             $plans = MyPlans::whereBetween('created_at', [now()->subDays(365), now()])->get();
             foreach ($plans as $plan) {
                 $revenueReport['labels'][] = $plan->created_at->format('EEE');
-                $revenueReport['data'][] = $plan->plan->amount;
+                $revenueReport['data'][] = $plan->plan->price;
             }
             return response()->json([
                 "success" => true,
