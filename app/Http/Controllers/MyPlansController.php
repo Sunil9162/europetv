@@ -58,4 +58,27 @@ class MyPlansController extends Controller
             ], 500);
         }
     }
+
+    public function show($id)
+    {
+        try {
+            $myPlan = MyPlans::find($id);
+            if (!$myPlan) {
+                return response()->json([
+                    "success" => false,
+                    "message" => "My plan not found"
+                ], 404);
+            }
+            return response()->json([
+                "success" => true,
+                "message" => "My plan fetched successfully",
+                "my_plan" => $myPlan
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "success" => false,
+                "message" => $th->getMessage()
+            ], 500);
+        }
+    }
 }
