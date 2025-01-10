@@ -129,7 +129,7 @@ class AdminController extends Controller
             foreach ($plans as $plan) {
                 dd($plan);
                 $revenueReport['labels'][] = $plan->created_at->format('EEE');
-                $revenueReport['data'][] = $plan->plan->price;
+                $revenueReport['data'][] = $plan->price;
             }
             return response()->json([
                 "success" => true,
