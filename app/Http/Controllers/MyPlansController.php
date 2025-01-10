@@ -19,7 +19,7 @@ class MyPlansController extends Controller
         } catch (\Throwable $th) {
             return response()->json([
                 "success" => false,
-                "message" =>  $th->getMessage()
+                "message" => $th->getMessage()
             ], 500);
         }
     }
@@ -31,12 +31,18 @@ class MyPlansController extends Controller
             return response()->json([
                 "success" => true,
                 "message" => "My plans fetched successfully",
-                "my_plans" => $myPlans
+                "my_plans" => $myPlans->items(),
+                'meta' => [
+                    'total' => $myPlans->total(),
+                    'currentPage' => $myPlans->currentPage(),
+                    'perPage' => $myPlans->perPage(),
+                    'lastPage' => $myPlans->lastPage()
+                ]
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
                 "success" => false,
-                "message" =>  $th->getMessage()
+                "message" => $th->getMessage()
             ], 500);
         }
     }
