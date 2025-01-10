@@ -101,10 +101,16 @@ class AdminController extends Controller
     {
         try {
             $request = request();
-            $request->validate([
-                'start_date' => 'date',
-                'end_date' => 'date'
+            $validator = \Validator::make($request->all(), [
+                'start_date' => 'required|date',
+                'end_date' => 'required|date'
             ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    "success" => false,
+                    "message" => $validator->errors()->first()
+                ], 400);
+            }
             $startDate = $request->start_date;
             $endDate = $request->end_date;
             $overView = [
