@@ -142,8 +142,8 @@ class AdminController extends Controller
             $userData = [];
             // Active user inactive user percentage
             $activeUsers = MyPlans::where('status', 1)->count();
-            $inactiveUsers = MyPlans::where('status', 0)->count();
             $totalUsers = User::count();
+            $inactiveUsers = $totalUsers - $activeUsers;
             $userData['active_users'] = $activeUsers;
             $userData['inactive_users'] = $inactiveUsers;
             $userData['active_users_percentage'] = round(($activeUsers / $totalUsers) * 100, 0);
