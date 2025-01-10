@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\User;
 use App\Models\MyPlans;
 
 
@@ -28,10 +28,14 @@ class MyPlansController extends Controller
     {
         try {
             $myPlans = MyPlans::paginate(10);
+            $items = $myPlans->items();
+            foreach ($items as $item) {
+                $item->user = User::find($item->user_id);
+            }
             return response()->json([
                 "success" => true,
                 "message" => "My plans fetched successfully",
-                "my_plans" => $myPlans->items(),
+                "my_plans" => $items,
                 'meta' => [
                     'total' => $myPlans->total(),
                     'currentPage' => $myPlans->currentPage(),
