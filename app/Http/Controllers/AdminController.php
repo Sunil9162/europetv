@@ -129,7 +129,7 @@ class AdminController extends Controller
             $daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
             foreach ($daysOfWeek as $day) {
                 $date = now()->startOfWeek()->modify($day)->format('l');
-                $planForDate = $plans->firstWhere('created_at', $date);
+                $planForDate = $plans->where('created_at', '>=', now()->startOfWeek()->modify($day))->where('created_at', '<=', now()->startOfWeek()->modify($day)->endOfDay())->first();
                 $revenueReport['labels'][] = $date;
                 $revenueReport['data'][] = $planForDate ? $planForDate->price : 0;
             }
