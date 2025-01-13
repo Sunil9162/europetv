@@ -198,11 +198,10 @@ class UserController extends Controller
             $validatedData = $request->validate([
                 'name' => 'required|max:55',
                 'email' => 'email|required|unique:users',
-                'password' => 'required'
             ]);
-
-            $validatedData['password'] = bcrypt($request->password);
-
+            if ($request->has('password')) {
+                $validatedData['password'] = bcrypt($request->password);
+            }
             $user->update($validatedData);
             return response()->json([
                 "success" => true,
