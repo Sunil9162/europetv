@@ -118,7 +118,7 @@ class UserController extends Controller
     public function index()
     {
         try {
-            $users = User::paginate();
+            $users = User::paginate(15);
             return response()->json([
                 "success" => true,
                 "message" => "Users fetched successfully",
@@ -207,6 +207,31 @@ class UserController extends Controller
                 "success" => true,
                 "message" => "User updated successfully",
                 "user" => $user
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "success" => false,
+                "message" => $th->getMessage()
+            ], 500);
+        }
+    }
+
+
+    // Search for users
+    public function search($query)
+    {
+        try {
+            $users = User::where('name', 'like', '%' . $query . '%')->paginate(15);
+            return response()->json([
+                "success" => true,
+                "message" => "Users fetched successfully",
+                "users" => $users->items(),
+                'meta' => [
+                    'total' => $users->total(),
+                    'currentPage' => $users->currentPage(),
+                    'perPage' => $users->perPage(),
+                    'lastPage' => $users->lastPage()
+                ]
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([

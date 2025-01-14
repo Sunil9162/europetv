@@ -87,6 +87,9 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
 
     //Admin Dashboard
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
+
+    //Search Users
+    Route::get("/admin/search/{query}", [UserController::class, 'search']);
 });
 
 
