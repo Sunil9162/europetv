@@ -19,13 +19,13 @@ class MovieController extends Controller
         if ($request->has('category')) {
             $movies = Movie::with('categories', 'tags')->whereHas('categories', function ($query) use ($request) {
                 $query->where('name', $request->category);
-            })->paginate(10);
+            })->paginate(15);
         }
 
         if ($request->has(key: 'tag')) {
             $movies = Movie::with('categories', 'tags')->whereHas('tags', function ($query) use ($request) {
                 $query->where('name', $request->tag);
-            })->paginate(10);
+            })->paginate(15);
         }
 
         return response()->json([
