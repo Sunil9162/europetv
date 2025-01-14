@@ -14,8 +14,14 @@ class UserController extends Controller
             $validatedData = $request->validate([
                 'name' => 'required|max:55',
                 'email' => 'email|required|unique:users',
-                'password' => 'required|confirmed'
+                'password' => 'required|confirmed',
             ]);
+            if (isset($request->photo)) {
+                $posterData = base64_decode($request->poster);
+                $posterPath = 'userimage/' . uniqid() . '.jpg';
+                file_put_contents(public_path($posterPath), $posterData);
+                $validatedData['photo'] = url($posterPath);
+            }
 
             $validatedData['password'] = bcrypt($request->password);
 
