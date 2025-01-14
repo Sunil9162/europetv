@@ -218,9 +218,10 @@ class UserController extends Controller
 
 
     // Search for users
-    public function search($query)
+    public function search()
     {
         try {
+            $query = request()->query('query');
             $users = User::where('name', 'like', '%' . $query . '%')->paginate(15);
             return response()->json([
                 "success" => true,

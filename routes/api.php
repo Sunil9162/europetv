@@ -89,7 +89,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
 
     //Search Users
-    Route::get("/admin/search/{query}", [UserController::class, 'search']);
+    Route::get("/admin/search", [UserController::class, 'search']);
 });
 
 
