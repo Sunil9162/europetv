@@ -17,7 +17,7 @@ class UserController extends Controller
                 'password' => 'required|confirmed',
             ]);
             if (isset($request->photo)) {
-                $posterData = base64_decode($request->poster);
+                $posterData = base64_decode($request->photo);
                 $posterPath = 'userimage/' . uniqid() . '.jpg';
                 file_put_contents(public_path($posterPath), $posterData);
                 $validatedData['photo'] = url($posterPath);
