@@ -14,7 +14,7 @@ class MovieController extends Controller
     // Get all movies and series
     public function index(Request $request)
     {
-        $movies = Movie::with('categories', 'tags')->paginate(10);
+        $movies = Movie::with('categories', 'tags')->paginate(15);
 
         if ($request->has('category')) {
             $movies = Movie::with('categories', 'tags')->whereHas('categories', function ($query) use ($request) {
@@ -43,7 +43,7 @@ class MovieController extends Controller
 
     public function getAllSeries()
     {
-        $series =  Series::with('seasons.episodes')->paginate(10);
+        $series = Series::with('seasons.episodes')->paginate(10);
         return response()->json([
             'success' => true,
             'message' => 'Series retrieved successfully',
@@ -191,7 +191,7 @@ class MovieController extends Controller
                 $query->where('name', $category->name);
             })->orderBy('view_count', 'desc')->limit(5)->get();
             $popularInCategory[] = [
-                'title' =>  "Popular in " . $category->name,
+                'title' => "Popular in " . $category->name,
                 'data' => $movies
             ];
         }
