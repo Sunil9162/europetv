@@ -15,6 +15,7 @@ class UserController extends Controller
                 'name' => 'required|max:55',
                 'email' => 'email|required|unique:users',
                 'password' => 'required|confirmed',
+                'phone' => 'nullable|regex:/^([0-9\s\-\+\(\)]*)$/|min:10'
             ]);
             if (isset($request->photo)) {
                 $posterData = base64_decode($request->photo);
