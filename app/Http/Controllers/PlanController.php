@@ -146,6 +146,7 @@ class PlanController extends Controller
             $myPlan->start_date = $startDate;
             $myPlan->name = $plan->name;
             $myPlan->end_date = now()->addDays($plan->duration);
+            $myPlan->price = $plan->price;
             $myPlan->save();
             return response()->json([
                 "success" => true,
