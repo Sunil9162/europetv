@@ -112,6 +112,7 @@ class PlanController extends Controller
     public function subscribe(Request $request)
     {
         try {
+            $startDate = $request->input('start_date', now());
             $user = User::find($request->user_id);
             if (!$user) {
                 return response()->json([
@@ -142,7 +143,7 @@ class PlanController extends Controller
             $myPlan = new MyPlans();
             $myPlan->user_id = $user->id;
             $myPlan->plan_id = $plan->id;
-            $myPlan->start_date = now();
+            $myPlan->start_date = $startDate;
             $myPlan->name = $plan->name;
             $myPlan->end_date = now()->addDays($plan->duration);
             $myPlan->save();
