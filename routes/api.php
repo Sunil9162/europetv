@@ -72,6 +72,7 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::put('/plans/{id}', [PlanController::class, 'updatePlan']);
     Route::delete('/plans/{id}', [PlanController::class, 'deletePlan']);
     Route::post('/subscribe', [PlanController::class, 'subscribe']);
+    Route::get('/planhistory/{userId}', [PlanController::class, 'planHistory']);
 
 
     // Admin routes for users

@@ -160,4 +160,28 @@ class PlanController extends Controller
             ], 500);
         }
     }
+
+    public function planHistory($userId)
+    {
+        try {
+            $user = User::find($userId);
+            if (!$user) {
+                return response()->json([
+                    "success" => false,
+                    "message" => "User not found"
+                ], 404);
+            }
+            $plans = MyPlans::where('user_id', $user->id)->get();
+            return response()->json([
+                "success" => true,
+                "message" => "Plan history fetched successfully",
+                "plans" => $plans
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                "success" => false,
+                "message" =>  $th->getMessage()
+            ], 500);
+        }
+    }
 }
