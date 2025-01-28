@@ -185,7 +185,7 @@ class PlanController extends Controller
                 "success" => true,
                 "message" => "Plan history fetched successfully",
                 "plans" => $plans,
-                "user" =>  $item->user = User::find($item->user_id),
+                "user" =>  User::find($item->user_id),
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
