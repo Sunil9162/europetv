@@ -32,7 +32,6 @@ class MyPlansController extends Controller
             $items = $myPlans->items();
             foreach ($items as $item) {
                 $item->user = User::find($item->user_id);
-                $startDate = $item->start_date;
                 $endDate = $item->end_date;
                 // Calculate the number of days remaining
                 $now = time();
@@ -70,6 +69,13 @@ class MyPlansController extends Controller
                     "message" => "My plan not found"
                 ], status: 400);
             }
+            $endDate = $myPlan->end_date;
+            // Calculate the number of days remaining
+            $now = time();
+            $end = strtotime($endDate);
+            $datediff = $end - $now;
+            $daysRemaining = round($datediff / (60 * 60 * 24));
+            $myPlan->status = $daysRemaining > 0 ? 1 : 0;
             return response()->json([
                 "success" => true,
                 "message" => "My plan fetched successfully",

@@ -172,10 +172,20 @@ class PlanController extends Controller
                 ], 404);
             }
             $plans = MyPlans::where('user_id', $user->id)->get();
+            foreach ($plans as $item) {
+                $endDate = $item->end_date;
+                // Calculate the number of days remaining
+                $now = time();
+                $end = strtotime($endDate);
+                $datediff = $end - $now;
+                $daysRemaining = round($datediff / (60 * 60 * 24));
+                $item->status = $daysRemaining > 0 ? 1 : 0;
+            }
             return response()->json([
                 "success" => true,
                 "message" => "Plan history fetched successfully",
-                "plans" => $plans
+                "plans" => $plans,
+                "user" =>  $item->user = User::find($item->user_id),
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([
