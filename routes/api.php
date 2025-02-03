@@ -50,6 +50,8 @@ Route::post('/admin/register', [AdminController::class, 'register']);
 Route::get('/admin/movies', [MovieController::class, 'index']);
 Route::get('/admin/series', [MovieController::class, 'getAllSeries']);
 
+Route::post('/store/series', [MovieController::class, 'storeSeriesData']);
+Route::post('/update/series/{seriesId}', [MovieController::class, 'updateSeriesData']);
 
 Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::post('/admin/logout', [AdminController::class, 'logout']);

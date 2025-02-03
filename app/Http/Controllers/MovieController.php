@@ -121,6 +121,204 @@ class MovieController extends Controller
         return response()->json($series);
     }
 
+
+
+
+    public function storeSeriesData(Request $request)
+    {
+        try {
+            $data = $request->validate([
+                'series.name' => 'required|string',
+                'series.description' => 'nullable|string',
+                'series.coverImage' => 'nullable|string',
+                'series.seasons' => 'required|array',
+                'series.seasons.*.seasonNumber' => 'required|integer',
+                'series.seasons.*.description' => 'nullable|string',
+                'series.seasons.*.image' => 'nullable|string',
+                'series.seasons.*.episodes' => 'required|array',
+                'series.seasons.*.episodes.*.episodeNumber' => 'required|integer',
+                'series.seasons.*.episodes.*.title' => 'required|string',
+                'series.seasons.*.episodes.*.description' => 'nullable|string',
+                'series.seasons.*.episodes.*.thumbnail' => 'nullable|string',
+            ]);
+
+            $seriesData = $data['series'];
+            if (isset($seriesData['coverImage']) && !str_starts_with($seriesData['coverImage'], 'http')) {
+                $coverImageData = base64_decode($seriesData['coverImage']);
+                // If folder not avaiable create new
+                if (!file_exists(public_path('covers'))) {
+                    mkdir(public_path('covers'));
+                }
+                $coverImagePath = 'covers/' . uniqid() . '.jpg';
+                file_put_contents(public_path($coverImagePath), $coverImageData);
+                $seriesData['coverImage'] = url($coverImagePath);
+            }
+
+            $series = Series::create([
+                'title' => $seriesData['name'],
+                'description' => $seriesData['description'],
+                'poster' => $seriesData['coverImage'] ?? null,
+            ]);
+
+            foreach ($seriesData['seasons'] as $seasonData) {
+                if (isset($seasonData['image']) && !str_starts_with($seasonData['image'], 'http')) {
+                    $seasonImageData = base64_decode($seasonData['image']);
+                    if (!file_exists(public_path('seasons'))) {
+                        mkdir(public_path('seasons'));
+                    }
+                    $seasonImagePath = 'seasons/' . uniqid() . '.jpg';
+                    file_put_contents(public_path($seasonImagePath), $seasonImageData);
+                    $seasonData['image'] = url($seasonImagePath);
+                }
+
+                $season = $series->seasons()->create([
+                    'season_number' => $seasonData['seasonNumber'],
+                    'description' => $seasonData['description'],
+                    'image' => $seasonData['image'] ?? null,
+                ]);
+
+                foreach ($seasonData['episodes'] as $episodeData) {
+                    if (isset($episodeData['thumbnail']) && !str_starts_with($episodeData['thumbnail'], 'http')) {
+                        $thumbnailData = base64_decode($episodeData['thumbnail']);
+                        if (!file_exists(public_path('thumbnails'))) {
+                            mkdir(public_path('thumbnails'));
+                        }
+                        $thumbnailPath = 'thumbnails/' . uniqid() . '.jpg';
+                        file_put_contents(public_path($thumbnailPath), $thumbnailData);
+                        $episodeData['thumbnail'] = url($thumbnailPath);
+                    }
+
+                    $season->episodes()->create([
+                        'episode_number' => $episodeData['episodeNumber'],
+                        'title' => $episodeData['title'],
+                        'description' => $episodeData['description'],
+                        'thumbnail' => $episodeData['thumbnail'] ?? null,
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Series, seasons, and episodes created successfully',
+                'series' => $series->load('seasons.episodes')
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+
+    // Update series, seasons, and episodes
+    public function updateSeriesData(Request $request, $seriesId)
+    {
+        try {
+            $data = $request->validate([
+                'series.name' => 'required|string',
+                'series.description' => 'nullable|string',
+                'series.coverImage' => 'nullable|string',
+                'series.seasons' => 'required|array',
+                'series.seasons.*.seasonNumber' => 'required|integer',
+                'series.seasons.*.description' => 'nullable|string',
+                'series.seasons.*.image' => 'nullable|string',
+                'series.seasons.*.episodes' => 'required|array',
+                'series.seasons.*.episodes.*.episodeNumber' => 'required|integer',
+                'series.seasons.*.episodes.*.title' => 'required|string',
+                'series.seasons.*.episodes.*.description' => 'nullable|string',
+                'series.seasons.*.episodes.*.thumbnail' => 'nullable|string',
+            ]);
+
+            $seriesData = $data['series'];
+            $series = Series::findOrFail($seriesId);
+
+            if (isset($seriesData['coverImage']) && !str_starts_with($seriesData['coverImage'], 'http')) {
+                $coverImageData = base64_decode($seriesData['coverImage']);
+                if (!file_exists(public_path('covers'))) {
+                    mkdir(public_path('covers'));
+                }
+                $coverImagePath = 'covers/' . uniqid() . '.jpg';
+                file_put_contents(public_path($coverImagePath), $coverImageData);
+                $seriesData['coverImage'] = url($coverImagePath);
+            }
+
+            $series->update([
+                'title' => $seriesData['name'],
+                'description' => $seriesData['description'],
+                'poster' => $seriesData['coverImage'] ?? $series->poster,
+            ]);
+
+            foreach ($seriesData['seasons'] as $seasonData) {
+                $season = $series->seasons()->where('season_number', $seasonData['seasonNumber'])->first();
+
+                if (!$season) {
+                    $season = $series->seasons()->create([
+                        'season_number' => $seasonData['seasonNumber'],
+                        'description' => $seasonData['description'],
+                        'image' => $seasonData['image'] ?? null,
+                    ]);
+                } else {
+                    if (isset($seasonData['image']) && !str_starts_with($seasonData['image'], 'http')) {
+                        $seasonImageData = base64_decode($seasonData['image']);
+                        if (!file_exists(public_path('seasons'))) {
+                            mkdir(public_path('seasons'));
+                        }
+                        $seasonImagePath = 'seasons/' . uniqid() . '.jpg';
+                        file_put_contents(public_path($seasonImagePath), $seasonImageData);
+                        $seasonData['image'] = url($seasonImagePath);
+                    }
+
+                    $season->update([
+                        'description' => $seasonData['description'],
+                        'image' => $seasonData['image'] ?? $season->image,
+                    ]);
+                }
+
+                foreach ($seasonData['episodes'] as $episodeData) {
+                    $episode = $season->episodes()->where('episode_number', $episodeData['episodeNumber'])->first();
+
+                    if (!$episode) {
+                        $season->episodes()->create([
+                            'episode_number' => $episodeData['episodeNumber'],
+                            'title' => $episodeData['title'],
+                            'description' => $episodeData['description'],
+                            'thumbnail' => $episodeData['thumbnail'] ?? null,
+                        ]);
+                    } else {
+                        if (isset($episodeData['thumbnail']) && !str_starts_with($episodeData['thumbnail'], 'http')) {
+                            $thumbnailData = base64_decode($episodeData['thumbnail']);
+                            if (!file_exists(public_path('thumbnails'))) {
+                                mkdir(public_path('thumbnails'));
+                            }
+                            $thumbnailPath = 'thumbnails/' . uniqid() . '.jpg';
+                            file_put_contents(public_path($thumbnailPath), $thumbnailData);
+                            $episodeData['thumbnail'] = url($thumbnailPath);
+                        }
+
+                        $episode->update([
+                            'title' => $episodeData['title'],
+                            'description' => $episodeData['description'],
+                            'thumbnail' => $episodeData['thumbnail'] ?? $episode->thumbnail,
+                        ]);
+                    }
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Series, seasons, and episodes updated successfully',
+                'series' => $series->load('seasons.episodes')
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+
     // Add a season to a series
     public function storeSeason(Request $request, $seriesId)
     {
