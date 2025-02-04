@@ -140,6 +140,7 @@ class MovieController extends Controller
                 'series.seasons.*.episodes.*.title' => 'required|string',
                 'series.seasons.*.episodes.*.description' => 'nullable|string',
                 'series.seasons.*.episodes.*.thumbnail' => 'nullable|string',
+                'series.seasons.*.episodes.*.url' => 'required|string',
             ]);
 
             $seriesData = $data['series'];
@@ -193,6 +194,7 @@ class MovieController extends Controller
                         'title' => $episodeData['title'],
                         'description' => $episodeData['description'],
                         'thumbnail' => $episodeData['thumbnail'] ?? null,
+                        'url' => $episodeData['url'] ?? null,
                     ]);
                 }
             }
@@ -228,6 +230,7 @@ class MovieController extends Controller
                 'series.seasons.*.episodes.*.title' => 'required|string',
                 'series.seasons.*.episodes.*.description' => 'nullable|string',
                 'series.seasons.*.episodes.*.thumbnail' => 'nullable|string',
+                'series.seasons.*.episodes.*.url' => 'required|string',
             ]);
 
             $seriesData = $data['series'];
@@ -284,6 +287,7 @@ class MovieController extends Controller
                             'title' => $episodeData['title'],
                             'description' => $episodeData['description'],
                             'thumbnail' => $episodeData['thumbnail'] ?? null,
+                            'url' => $episodeData['url'],
                         ]);
                     } else {
                         if (isset($episodeData['thumbnail']) && !str_starts_with($episodeData['thumbnail'], 'http')) {
@@ -300,6 +304,7 @@ class MovieController extends Controller
                             'title' => $episodeData['title'],
                             'description' => $episodeData['description'],
                             'thumbnail' => $episodeData['thumbnail'] ?? $episode->thumbnail,
+                            'url' => $episodeData['url'],
                         ]);
                     }
                 }
