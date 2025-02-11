@@ -9,7 +9,7 @@ class Episode extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['season_id', 'episode_number', 'title', 'description', 'trailer_url', 'episode_url'];
+    protected $fillable = ['season_id', 'episode_number', 'title', 'description', 'trailer_url', 'episode_url', 'image_url'];
 
     public function season()
     {
