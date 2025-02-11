@@ -258,6 +258,7 @@ class MovieController extends Controller
                 'title' => $seriesData['name'],
                 'description' => $seriesData['description'],
                 'poster' => $seriesData['coverImage'] ?? $series->poster,
+                'status' => $series->status,
             ]);
 
             foreach ($seriesData['seasons'] as $seasonData) {
@@ -294,8 +295,8 @@ class MovieController extends Controller
                             'episode_number' => $episodeData['episodeNumber'],
                             'title' => $episodeData['title'],
                             'description' => $episodeData['description'],
-                            'thumbnail' => $episodeData['thumbnail'] ?? null,
-                            'url' => $episodeData['url'],
+                            'image_url' => $episodeData['thumbnail'] ?? null,
+                            'episode_url' => $episodeData['url'],
                         ]);
                     } else {
                         if (isset($episodeData['thumbnail']) && !str_starts_with($episodeData['thumbnail'], 'http')) {
@@ -311,8 +312,8 @@ class MovieController extends Controller
                         $episode->update([
                             'title' => $episodeData['title'],
                             'description' => $episodeData['description'],
-                            'thumbnail' => $episodeData['thumbnail'] ?? $episode->thumbnail,
-                            'url' => $episodeData['url'],
+                            'image_url' => $episodeData['thumbnail'] ?? $episode->thumbnail,
+                            'episode_url' => $episodeData['url'],
                         ]);
                     }
                 }
@@ -322,6 +323,49 @@ class MovieController extends Controller
                 'success' => true,
                 'message' => 'Series, seasons, and episodes updated successfully',
                 'series' => $series->load('seasons.episodes')
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+
+    //Update Series Status
+    public function updateSeriesStatus(Request $request, $seriesId)
+    {
+        try {
+            $data = $request->validate([
+                'status' => 'required|boolean'
+            ]);
+
+            $series = Series::findOrFail($seriesId);
+            $series->update(['status' => $data['status'] ? 1 : 0]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Series status updated successfully',
+                'series' => $series
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    // Delete a series
+    public function deleteSeries($seriesId)
+    {
+        try {
+            $series = Series::findOrFail($seriesId);
+            $series->delete();
+            return response()->json([
+                'success' => true,
+                'message' => 'Series deleted successfully'
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([

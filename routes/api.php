@@ -68,6 +68,8 @@ Route::group(['middleware' => 'auth:sanctum'], function () {
     Route::delete('channels/{id}', [ChannelsController::class, 'destroy']);
     Route::post('/store/series', [MovieController::class, 'storeSeriesData']);
     Route::post('/update/series/{seriesId}', [MovieController::class, 'updateSeriesData']);
+    Route::post('/update/seriesstatus', [MovieController::class, 'updateSeriesStatus']);
+    Route::delete('/delete/series/{seriesId}', [MovieController::class, 'deleteSeries']);
 
     // Route for plans
     Route::get('/plans', [PlanController::class, 'index']);
