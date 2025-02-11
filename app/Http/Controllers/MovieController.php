@@ -159,6 +159,7 @@ class MovieController extends Controller
                 'title' => $seriesData['name'],
                 'description' => $seriesData['description'],
                 'poster' => $seriesData['coverImage'] ?? null,
+                'status' => 1,
             ]);
 
             foreach ($seriesData['seasons'] as $seasonData) {
