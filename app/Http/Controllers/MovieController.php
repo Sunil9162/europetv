@@ -181,15 +181,8 @@ class MovieController extends Controller
                 foreach ($seasonData['episodes'] as $episodeData) {
                     $newThumbnail = $episodeData['thumbnail'] ?? null;
                     if (isset($episodeData['thumbnail']) && !str_starts_with($episodeData['thumbnail'], 'http')) {
-                        $thumbnailData = base64_decode($episodeData['thumbnail']);
-                        if (!file_exists(public_path('thumbnails'))) {
-                            mkdir(public_path('thumbnails'));
-                        }
-                        $thumbnailPath = 'thumbnails/' . uniqid() . '.jpg';
-                        file_put_contents(public_path($thumbnailPath), $thumbnailData);
-                        $newThumbnail = url($thumbnailPath);
+                        $newThumbnail = $this->uploadImage($episodeData['thumbnail'], 'thumbnails');
                     }
-
                     $season->episodes()->create([
                         'episode_number' => $episodeData['episodeNumber'],
                         'title' => $episodeData['title'],
@@ -212,6 +205,19 @@ class MovieController extends Controller
             ], 500);
         }
     }
+
+    // Upload Image and return URL local function
+    public function uploadImage($imageData, $folder)
+    {
+        $imageData = base64_decode($imageData);
+        if (!file_exists(public_path($folder))) {
+            mkdir(public_path($folder));
+        }
+        $imagePath = $folder . '/' . uniqid() . '.jpg';
+        file_put_contents(public_path($imagePath), $imageData);
+        return url($imagePath);
+    }
+
 
 
     // Update series, seasons, and episodes
