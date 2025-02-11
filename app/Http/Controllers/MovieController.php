@@ -179,6 +179,7 @@ class MovieController extends Controller
                 ]);
 
                 foreach ($seasonData['episodes'] as $episodeData) {
+                    $newThumbnail = $episodeData['thumbnail'] ?? null;
                     if (isset($episodeData['thumbnail']) && !str_starts_with($episodeData['thumbnail'], 'http')) {
                         $thumbnailData = base64_decode($episodeData['thumbnail']);
                         if (!file_exists(public_path('thumbnails'))) {
@@ -186,15 +187,15 @@ class MovieController extends Controller
                         }
                         $thumbnailPath = 'thumbnails/' . uniqid() . '.jpg';
                         file_put_contents(public_path($thumbnailPath), $thumbnailData);
-                        $episodeData['thumbnail'] = url($thumbnailPath);
+                        $newThumbnail = url($thumbnailPath);
                     }
 
                     $season->episodes()->create([
                         'episode_number' => $episodeData['episodeNumber'],
                         'title' => $episodeData['title'],
                         'description' => $episodeData['description'],
-                        'thumbnail' => $episodeData['thumbnail'] ?? null,
-                        'url' => $episodeData['url'] ?? null,
+                        'image_url' => $newThumbnail,
+                        'episode_url' => $episodeData['url'] ?? null,
                     ]);
                 }
             }
